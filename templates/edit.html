@@ -1,0 +1,15 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Feed Coral{%endblock%}
+{% include 'header.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+      <form action="." method="POST">
+        <input type="text" name="title" value="{{post['title']}}">
+        <input type="hidden" value={{post['_id']}} name="post_id"> 
+        <textarea name="body" class="form-control" rows=5>{{post['body']}}</textarea>
+        <input type="submit" name="submit" value="Post">
+      </form>      
+    </div>
+</div>
+{% endblock %}

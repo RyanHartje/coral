@@ -48,6 +48,21 @@ def nadd():
   #  return render_template('uhoh.html')
   return render_template('index.html',blog_title=settings.blog_title)
 
+@app.route('/edit/<post_id>',methods=['GET'])
+def edit(post_id):
+  post=db.posts.find_one({'_id':ObjectId(post_id)})
+  return render_template('edit.html',blog_title=settings.blog_title,post=post)
+
+@app.route('/edit/',methods=['POST'])
+def pedit():
+  title = request.form['title']
+  body = request.form['body']
+  #try:
+  print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':"061814",'title':title,'body':body},safe=False,upsert=False))
+  #except: 
+  #  return render_template('uhoh.html')
+  return render_template('index.html',blog_title=settings.blog_title)
+
 @app.route('/remove/<post_id>',methods=['GET'])
 def remove(post_id):
   title = db.posts.find_one({'_id':ObjectId(post_id)})
