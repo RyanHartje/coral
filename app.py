@@ -17,6 +17,7 @@ Functions:
 from flask import Flask, render_template, request
 from flask.ext.bootstrap import Bootstrap
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import datetime
 import settings
 
@@ -27,8 +28,6 @@ Bootstrap(app)
 date = datetime.datetime.now()
 client = MongoClient()
 db = client.coral
-
-
 
 @app.route('/')
 def index():
@@ -49,6 +48,11 @@ def nadd():
   #  return render_template('uhoh.html')
   return render_template('index.html',blog_title=settings.blog_title)
 
+@app.route('/remove/<post_id>',methods=['GET'])
+def remove(post_id):
+  title = db.posts.find_one({'_id':ObjectId(post_id)})
+  print(db.posts.remove({'_id':ObjectId(post_id)}))
+  return render_template('remove.html',blog_title=settings.blog_title,title=title)
 
 if __name__ == "__main__":
   app.run(debug=True)
