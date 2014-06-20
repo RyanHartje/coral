@@ -14,3 +14,17 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<!-- super() inherits the current block from the extended template -->
+<!-- ckeditor
+https://gist.github.com/mrjoes/5189850
+http://librelist.com/browser/flask/2010/9/29/a-ckeditor-or-tinymce-for-blogging/#acbc43f16b1b4575d8a024f0cc66db13
+http://ckeditor.com/download
+-->
+{{ super() }}
+<script src="//cdn.ckeditor.com/4.4.1/standard/ckeditor.js"></script>
+<script>
+  CKEDITOR.replace('body');
+</script>
+{% endblock %}

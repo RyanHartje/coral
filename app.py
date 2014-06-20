@@ -28,6 +28,7 @@ Bootstrap(app)
 date = datetime.datetime.now()
 client = MongoClient()
 db = client.coral
+i = datetime.datetime.now()
 
 @app.route('/')
 def index():
@@ -41,9 +42,9 @@ def add():
 @app.route('/add/',methods=['POST'])
 def nadd():
   title = request.form['title']
-  body = request.form['body'].replace('\r\n','<br />')
+  body = request.form['body']#.replace('\r\n','<br />')
   #try:
-  db.posts.insert({'date':"061814",'title':title,'body':body})
+  db.posts.insert({'date':i,'title':title,'body':body})
   #except: 
   #  return render_template('uhoh.html')
   return render_template('index.html',blog_title=settings.blog_title)
@@ -56,9 +57,9 @@ def edit(post_id):
 @app.route('/edit/',methods=['POST'])
 def pedit():
   title = request.form['title']
-  body = request.form['body'].replace('\r\n','<br />')
+  body = request.form['body']#.replace('\r\n','<br />')
   #try:
-  print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':"061814",'title':title,'body':body},safe=False,upsert=False))
+  print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':i,'title':title,'body':body},safe=False,upsert=False))
   #except: 
   #  return render_template('uhoh.html')
   return render_template('index.html',blog_title=settings.blog_title)

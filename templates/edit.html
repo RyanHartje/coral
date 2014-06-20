@@ -10,6 +10,8 @@
         <br />
         <textarea name="body" class="form-control" rows=5>{{post['body']}}</textarea>
         <br />
+        <input type="hidden" value={{post['_id']}} name="post_id"> 
+        <br />
         <input class="form-control" type="submit" name="submit" value="Post">
       </form>      
     </div>
@@ -21,12 +23,11 @@
 https://gist.github.com/mrjoes/5189850
 http://librelist.com/browser/flask/2010/9/29/a-ckeditor-or-tinymce-for-blogging/#acbc43f16b1b4575d8a024f0cc66db13
 http://ckeditor.com/download
+http://docs.ckeditor.com/
 -->
 {{ super() }}
 <script src="//cdn.ckeditor.com/4.4.1/standard/ckeditor.js"></script>
 <script>
-$(document).ready(function(){ 
-    $("textarea[name='body']").ckeditor(function(){},{height:700});
-  });
+  CKEDITOR.replace('body');
 </script>
 {% endblock %}
