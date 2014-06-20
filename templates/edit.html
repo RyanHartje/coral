@@ -5,11 +5,28 @@
 <div class="container">
     <div class="page-header">
       <form action="." method="POST">
-        <input type="text" name="title" value="{{post['title']}}">
+        <input class="form-control" type="text" name="title" value="{{post['title']}}">
         <input type="hidden" value={{post['_id']}} name="post_id"> 
+        <br />
         <textarea name="body" class="form-control" rows=5>{{post['body']}}</textarea>
-        <input type="submit" name="submit" value="Post">
+        <br />
+        <input class="form-control" type="submit" name="submit" value="Post">
       </form>      
     </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<!-- super() inherits the current block from the extended template -->
+<!-- ckeditor 
+https://gist.github.com/mrjoes/5189850
+http://librelist.com/browser/flask/2010/9/29/a-ckeditor-or-tinymce-for-blogging/#acbc43f16b1b4575d8a024f0cc66db13
+http://ckeditor.com/download
+-->
+{{ super() }}
+<script src="//cdn.ckeditor.com/4.4.1/standard/ckeditor.js"></script>
+<script>
+$(document).ready(function(){ 
+    $("textarea[name='body']").ckeditor(function(){},{height:700});
+  });
+</script>
 {% endblock %}
