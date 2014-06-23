@@ -1,0 +1,37 @@
+{% extends "bootstrap/base.html" %}
+{% include "header.html" %}
+
+{% block title %}Coral - Login{% endblock %}
+
+{% block metas %}
+{{super()}}
+<meta name="keywords" value="{{ keywords }}">
+{% endblock %}
+
+{% block styles %}
+<link href="{{ url_for('static', filename='style.css') }}">
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <form action="." method="POST">
+      <input class="form-control" type="text" name="username" placeholder="username">
+      <input class="form-control" type="password" name="password" placeholder="password">
+      <input class="form-control" type="submit" name="submit" value="Log in">
+    </form>
+  </div>
+  <div class="col-md-4">
+      <h5>Brought to you by:</h5>
+      <img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com">
+      <p>This and that</p>
+  </div>
+  </div>
+</div>
+{% endblock %}
+
+
+

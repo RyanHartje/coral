@@ -1,15 +1,38 @@
 {% extends "bootstrap/base.html" %}
 {% include "header.html" %}
 
+{% block metas %}
+{{super()}}
+<meta name="keywords" value="{{ keywords }}">
+{% endblock %}
+
+{% block styles %}
+<link href="{{ url_for('static', filename='style.css') }}">
+{{super()}}
+{% endblock %}
+
 {% block content %}
 <div class="container">
-    <div class="page-header">
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-6">
       {% for post in posts %}
-      <h2>{{post['title']}}</h2>
-      <h4><i class="glyphicon glyphicon-chevron-up"></i> <i class="glyphicon glyphicon-chevron-down"></i> <a href="edit/{{post['_id']}}"><i class="glyphicon glyphicon-pencil"></i></a> <a href="remove/{{post['_id']}}"><i class="glyphicon glyphicon-trash"></i></a></h4>
+      <h2 class="inline">{{post['title']}}</h2>
+      <h4 class="inline">
+        <i class="glyphicon glyphicon-chevron-up"></i> <i class="glyphicon glyphicon-chevron-down"></i> 
+        {% if logged_in %}
+        <a href="edit/{{post['_id']}}"><i class="glyphicon glyphicon-pencil"></i></a> <a href="remove/{{post['_id']}}"><i class="glyphicon glyphicon-trash"></i></a>
+        {% endif %}
+      </h4>
       <p>{{post['body']|safe}}</p>
       {% endfor %}
     </div>
+    <div class="col-md-4">
+      <h5>Brought to you by:</h5>
+      <a href="http://austindevlabs.com" target="_NEW"><img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com"></a>
+      <p>Get learning for free!</p>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

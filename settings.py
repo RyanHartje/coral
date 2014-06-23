@@ -1,3 +1,3 @@
-blog_title="Ryan rambles"
+blog_title="Nerd Feed"
 home_header=""
 

@@ -14,7 +14,7 @@ Functions:
   view all posts
 '''
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask.ext.bootstrap import Bootstrap
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -28,31 +28,32 @@ Bootstrap(app)
 date = datetime.datetime.now()
 client = MongoClient()
 db = client.coral
+session = {}
+session['logged_in']=False
 i = datetime.datetime.now()
 
 @app.route('/')
 def index():
   posts = db.posts.find()
-  return render_template('index.html',blog_title=settings.blog_title,posts=posts)
+  return render_template('index.html',blog_title=settings.blog_title,posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'])
 
-@app.route('/add/',methods=['GET'])
+@app.route('/add/',methods=['GET','POST'])
 def add():
-  return render_template('badd.html',blog_title=settings.blog_title)
-
-@app.route('/add/',methods=['POST'])
-def nadd():
-  title = request.form['title']
-  body = request.form['body']#.replace('\r\n','<br />')
-  #try:
-  db.posts.insert({'date':i,'title':title,'body':body})
-  #except: 
-  #  return render_template('uhoh.html')
-  return render_template('index.html',blog_title=settings.blog_title)
+  if request.method=='GET':
+    return render_template('badd.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
+  elif request.method=='POST':
+    title = request.form['title']
+    body = request.form['body']#.replace('\r\n','<br />')
+    #try:
+    db.posts.insert({'date':i,'title':title,'body':body})
+    #except: 
+    #  return render_template('uhoh.html')
+    return render_template('index.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
 
 @app.route('/edit/<post_id>',methods=['GET'])
 def edit(post_id):
   post=db.posts.find_one({'_id':ObjectId(post_id)})
-  return render_template('edit.html',blog_title=settings.blog_title,post=post)
+  return render_template('edit.html',blog_title=settings.blog_title,post=post,logged_in=session['logged_in'])
 
 @app.route('/edit/',methods=['POST'])
 def pedit():
@@ -62,13 +63,37 @@ def pedit():
   print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':i,'title':title,'body':body},safe=False,upsert=False))
   #except: 
   #  return render_template('uhoh.html')
-  return render_template('index.html',blog_title=settings.blog_title)
+  return redirect(url_for('index.html',blog_title=settings.blog_title,logged_in=session['logged_in']))
 
 @app.route('/remove/<post_id>',methods=['GET'])
 def remove(post_id):
   title = db.posts.find_one({'_id':ObjectId(post_id)})
   print(db.posts.remove({'_id':ObjectId(post_id)}))
   return render_template('remove.html',blog_title=settings.blog_title,title=title)
+
+@app.route('/login/',methods=['GET','POST'])
+def login():
+  if request.method=='GET':
+    return render_template('login.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
+
+  elif request.method=='POST':
+    user = request.form['username']
+    if user == "ryan":
+      if request.form['password']=="coral":
+        session['logged_in'] = True
+        print("\n\nRyan Logged in\n\n")
+      else:
+        session['logged_in'] = False
+    else:
+      session['logged_in'] = False
+    return redirect(url_for('index',blog_title=settings.blog_title,logged_in=session['logged_in']))
+
+@app.route('/logout/')
+def logout():
+  #session.pop('logged_in', None)
+  session['logged_in']=False
+  print("You've been logged out")
+  return redirect (url_for('index'))
 
 if __name__ == "__main__":
   app.run(debug=True)
