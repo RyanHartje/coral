@@ -95,5 +95,13 @@ def logout():
   print("You've been logged out")
   return redirect (url_for('index'))
 
+@app.route('/vote/', methods=['POST'])
+def vote():
+  # If score exists let's update it else instanciate it at 1 or -1
+  data = request.json
+  print(db.posts.update({'_id':ObjectId(request.json['_id'])},{vote: request.json['vote']},safe=False,upsert=False))
+
+ 
+
 if __name__ == "__main__":
   app.run(debug=True)

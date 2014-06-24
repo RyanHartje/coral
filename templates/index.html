@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block styles %}
-<link href="{{ url_for('static', filename='style.css') }}">
 {{super()}}
+<link href="{{ url_for('static', filename='style.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,9 @@
       {% for post in posts %}
       <h2 class="inline">{{post['title']}}</h2>
       <h4 class="inline">
-        <i class="glyphicon glyphicon-chevron-up"></i> <i class="glyphicon glyphicon-chevron-down"></i> 
+        <a href="#" onclick="vote({{post['_id']}},1)"><i class="glyphicon glyphicon-chevron-up"></i></a> 
+        <a href="#" onclick="vote({{post['_id']}},-1)"><i class="glyphicon glyphicon-chevron-down"></i></a> 
+
         {% if logged_in %}
         <a href="edit/{{post['_id']}}"><i class="glyphicon glyphicon-pencil"></i></a> <a href="remove/{{post['_id']}}"><i class="glyphicon glyphicon-trash"></i></a>
         {% endif %}
@@ -28,6 +30,11 @@
       {% endfor %}
     </div>
     <div class="col-md-4">
+
+    {% if logged_in %}
+      <a href="settings/sidebar"><i class="glyphicon glyphicon-pencil"></i></a>
+    {% endif %}
+
       <h5>Brought to you by:</h5>
       <a href="http://austindevlabs.com" target="_NEW"><img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com"></a>
       <p>Get learning for free!</p>
@@ -36,5 +43,24 @@
 </div>
 {% endblock %}
 
-
+{% block scripts %}
+{{super()}}
+<script>
+  function vote(id,score){
+    // see what I did here? :p
+    var jason = { '_id':id, 'score':score };
+    $.ajax('vote',{
+      type: 'POST',
+      data: JSON.stringify(jason),
+      contentType: 'application/json',
+      success: function(data, textStatus, jqXHR){
+        console.log(data);
+      },
+      error: function(jqXHR, textStatus, errorThrown){
+        console.log(errorThrown);
+      }
+    }); 
+  }
+</script>
+{% endblock %}
 
