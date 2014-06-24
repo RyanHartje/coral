@@ -1,0 +1,17 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Feed Coral{%endblock%}
+{% include 'header.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+      <form action="." method="POST">
+        <br />
+        Enter the html for your sidebar below:
+            <textarea name="body" class="form-control" rows=5>{% if sidebar is defined %}{{sidebar['body']}}{% endif %}</textarea>
+        <br />
+        <br />
+        <input class="form-control" type="submit" name="submit" value="Post">
+      </form>      
+    </div>
+</div>
+{% endblock %}

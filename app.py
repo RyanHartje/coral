@@ -7,7 +7,7 @@ http://github.com/ryanhartje
 pre alpha
 
 Functions:
-  create post
+  create 
   delete post
   edit post
   view posts
@@ -18,8 +18,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask.ext.bootstrap import Bootstrap
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import datetime
-import settings
+import datetime, settings
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -35,12 +34,12 @@ i = datetime.datetime.now()
 @app.route('/')
 def index():
   posts = db.posts.find()
-  return render_template('index.html',blog_title=settings.blog_title,posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'])
+  return render_template('index.html',blog_title="Bug Blog",posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'])
 
 @app.route('/add/',methods=['GET','POST'])
 def add():
   if request.method=='GET':
-    return render_template('badd.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
+    return render_template('badd.html',blog_title="Bug Blog",logged_in=session['logged_in'])
   elif request.method=='POST':
     title = request.form['title']
     body = request.form['body']#.replace('\r\n','<br />')
@@ -48,12 +47,12 @@ def add():
     db.posts.insert({'date':i,'title':title,'body':body})
     #except: 
     #  return render_template('uhoh.html')
-    return render_template('index.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
+    return render_template('index.html',blog_title="Bug Blog",logged_in=session['logged_in'])
 
 @app.route('/edit/<post_id>',methods=['GET'])
 def edit(post_id):
   post=db.posts.find_one({'_id':ObjectId(post_id)})
-  return render_template('edit.html',blog_title=settings.blog_title,post=post,logged_in=session['logged_in'])
+  return render_template('edit.html',blog_title="Bug Blog",post=post,logged_in=session['logged_in'])
 
 @app.route('/edit/',methods=['POST'])
 def pedit():
@@ -63,18 +62,18 @@ def pedit():
   print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':i,'title':title,'body':body},safe=False,upsert=False))
   #except: 
   #  return render_template('uhoh.html')
-  return redirect(url_for('index.html',blog_title=settings.blog_title,logged_in=session['logged_in']))
+  return redirect(url_for('index.html',blog_title="Bug Blog",logged_in=session['logged_in']))
 
 @app.route('/remove/<post_id>',methods=['GET'])
 def remove(post_id):
   title = db.posts.find_one({'_id':ObjectId(post_id)})
   print(db.posts.remove({'_id':ObjectId(post_id)}))
-  return render_template('remove.html',blog_title=settings.blog_title,title=title)
+  return render_template('remove.html',blog_title="Bug Blog",title=title)
 
 @app.route('/login/',methods=['GET','POST'])
 def login():
   if request.method=='GET':
-    return render_template('login.html',blog_title=settings.blog_title,logged_in=session['logged_in'])
+    return render_template('login.html',blog_title="Bug Blog",logged_in=session['logged_in'])
 
   elif request.method=='POST':
     user = request.form['username']
@@ -86,7 +85,7 @@ def login():
         session['logged_in'] = False
     else:
       session['logged_in'] = False
-    return redirect(url_for('index',blog_title=settings.blog_title,logged_in=session['logged_in']))
+    return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in']))
 
 @app.route('/logout/')
 def logout():
@@ -101,6 +100,29 @@ def vote():
   data = request.json
   print(db.posts.update({'_id':ObjectId(request.json['_id'])},{vote: request.json['vote']},safe=False,upsert=False))
 
+@app.route('/settings/')
+def settings():
+  return render_template('settings.html')
+
+@app.route('/settings/sidebar/', methods=['GET','POST'])
+def sidebar():
+  
+  try:
+    sidebar = db.settings.sidebar.find_one()
+    print("Got Sidebar: " + sidebar['body'])
+  except:
+    sidebar = {}
+    print("Sidebar undefinied")
+  
+  if request.method=='GET':
+    return render_template('sidebar.html',blog_title="Bug Blog",logged_in=session['logged_in'],sidebar=sidebar)
+
+  elif request.method=='POST':
+    print("Inserting sidebar")
+    sidebar = db.settings.sidebar.find_one()
+    body = request.form['body']
+    print(db.settings.siderbar.insert({'_id':ObjectId(sidebar['_id'])},{'body':body},safe=False,upsert=True))
+    return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in']))
  
 
 if __name__ == "__main__":
