@@ -43,8 +43,9 @@ def add():
   elif request.method=='POST':
     title = request.form['title']
     body = request.form['body']#.replace('\r\n','<br />')
+    keywords = request.form['keywords']
     #try:
-    db.posts.insert({'date':i,'title':title,'body':body})
+    db.posts.insert({'date':i,'title':title,'body':body,'keywords':keywords})
     #except: 
     #  return render_template('uhoh.html')
     return render_template('index.html',blog_title="Bug Blog",logged_in=session['logged_in'])
@@ -58,11 +59,13 @@ def edit(post_id):
 def pedit():
   title = request.form['title']
   body = request.form['body']#.replace('\r\n','<br />')
+  keywords = request.form['keywords']
   #try:
-  print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':i,'title':title,'body':body},safe=False,upsert=False))
+  print(db.posts.update({'_id':ObjectId(request.form['post_id'])},{'date':i,'title':title,'body':body,'keywords':keywords},safe=False,upsert=False))
   #except: 
   #  return render_template('uhoh.html')
-  return redirect(url_for('index.html',blog_title="Bug Blog",logged_in=session['logged_in']))
+  posts=db.posts.find()
+  return redirect(url_for('index',blog_title="Bug Blog",posts=posts,logged_in=session['logged_in']))
 
 @app.route('/remove/<post_id>',methods=['GET'])
 def remove(post_id):
@@ -76,6 +79,7 @@ def login():
     return render_template('login.html',blog_title="Bug Blog",logged_in=session['logged_in'])
 
   elif request.method=='POST':
+    posts = db.posts.find()
     user = request.form['username']
     if user == "ryan":
       if request.form['password']=="coral":
@@ -85,7 +89,7 @@ def login():
         session['logged_in'] = False
     else:
       session['logged_in'] = False
-    return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in']))
+    return redirect(url_for('index',blog_title="Bug Blog",posts=posts,logged_in=session['logged_in']))
 
 @app.route('/logout/')
 def logout():
@@ -108,8 +112,8 @@ def settings():
 def sidebar():
   
   try:
-    sidebar = db.settings.find_one()
-    print("Got Sidebar: " + sidebar['body'])
+    sidebar = db.settings.find_one({'name':'sidebar'})
+    print("Got Sidebar: " + sidebar['sidebar'])
   except:
     sidebar = {}
     print("Sidebar undefinied")
@@ -118,15 +122,18 @@ def sidebar():
     return render_template('sidebar.html',blog_title="Bug Blog",logged_in=session['logged_in'],sidebar=sidebar)
 
   elif request.method=='POST':
-    print("Inserting sidebar")
-    sidebar = db.settings.sidebar.find_one()
+    sidebar = db.settings.find_one({'name':'sidebar'})
     user_input = request.form['sidebar']
     try:
-      db.settings.siderbar.insert({'_id':ObjectId(sidebar['_id'])},{'body':user_input},safe=False,upsert=False)
+      db.settings.insert({'_id':ObjectId(sidebar['_id'])},{'sidebar':user_input},safe=False,upsert=False)
+      print("Inserting sidebar")
     except:
-      db.settings.insert({'body':user_input})
+      db.settings.insert({'sidebar':user_input})
+      print("Exception Thrown")
+      print(db.settings.find_one())
 
-    return render_template('index.html',blog_title="Bug Blog")
+    posts = db.posts.find()
+    return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in'],posts=posts))
  
 
 if __name__ == "__main__":
