@@ -108,7 +108,7 @@ def settings():
 def sidebar():
   
   try:
-    sidebar = db.settings.sidebar.find_one()
+    sidebar = db.settings.find_one()
     print("Got Sidebar: " + sidebar['body'])
   except:
     sidebar = {}
@@ -120,9 +120,13 @@ def sidebar():
   elif request.method=='POST':
     print("Inserting sidebar")
     sidebar = db.settings.sidebar.find_one()
-    body = request.form['body']
-    print(db.settings.siderbar.insert({'_id':ObjectId(sidebar['_id'])},{'body':body},safe=False,upsert=True))
-    return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in']))
+    user_input = request.form['sidebar']
+    try:
+      db.settings.siderbar.insert({'_id':ObjectId(sidebar['_id'])},{'body':user_input},safe=False,upsert=False)
+    except:
+      db.settings.insert({'body':user_input})
+
+    return render_template('index.html',blog_title="Bug Blog")
  
 
 if __name__ == "__main__":
