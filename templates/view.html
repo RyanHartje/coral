@@ -16,7 +16,6 @@
 <div class="row">
   <div class="col-md-2"></div>
   <div class="col-md-6">
-      {% for post in posts %}
       <h2 class="inline"><a href="view/{{post['_id']}}">{{post['title']}}</a></h2>
       <h4 class="inline">
         <a href="#" onclick="vote({{post['_id']}},1)"><i class="glyphicon glyphicon-chevron-up"></i></a> 
@@ -27,7 +26,6 @@
         {% endif %}
       </h4>
       <p>{{post['body']|safe}}</p>
-      {% endfor %}
     </div>
     <div class="col-md-4">
 
@@ -35,7 +33,9 @@
       <a href="settings/sidebar/"><i class="glyphicon glyphicon-pencil"></i></a>
     {% endif %}
 
-    {{ sidebar['sidebar']|safe }}
+      <h5>Brought to you by:</h5>
+      <a href="http://austindevlabs.com" target="_NEW"><img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com"></a>
+      <p>Get learning for free!</p>
     </div>
   </div>
 </div>

@@ -34,7 +34,22 @@ i = datetime.datetime.now()
 @app.route('/')
 def index():
   posts = db.posts.find()
-  return render_template('index.html',blog_title="Bug Blog",posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'])
+  try:
+    sidebar = db.settings.find_one({'name':'sidebar'})
+  except:
+    sidebar = {'sidebar':''}
+
+  return render_template('index.html',blog_title="Bug Blog",posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'],sidebar=sidebar)
+
+@app.route('/view/<postid>')
+def view(postid):
+  post = db.posts.find_one({'_id':ObjectId(postid)})
+  print(post)
+  try:
+    keywords=post['keywords']
+  except:
+    keywords=""
+  return render_template('view.html',blog_title="Bug Blog",post=post,keywords=keywords,logged_in=session['logged_in'])
 
 @app.route('/add/',methods=['GET','POST'])
 def add():
@@ -125,12 +140,12 @@ def sidebar():
     sidebar = db.settings.find_one({'name':'sidebar'})
     user_input = request.form['sidebar']
     try:
-      db.settings.insert({'_id':ObjectId(sidebar['_id'])},{'sidebar':user_input},safe=False,upsert=False)
-      print("Inserting sidebar")
+      db.settings.update({'_id':ObjectId(sidebar['_id'])},{'name':'sidebar','sidebar':user_input},safe=False,upsert=False)
+      print("Updating sidebar")
     except:
-      db.settings.insert({'sidebar':user_input})
-      print("Exception Thrown")
-      print(db.settings.find_one())
+      db.settings.insert({'name':'sidebar','sidebar':user_input})
+      print("Exception Thrown, inserting sidebar")
+      print(db.settings.find_one({'name':'sidebar'}))
 
     posts = db.posts.find()
     return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in'],posts=posts))
