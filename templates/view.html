@@ -33,9 +33,7 @@
       <a href="settings/sidebar/"><i class="glyphicon glyphicon-pencil"></i></a>
     {% endif %}
 
-      <h5>Brought to you by:</h5>
-      <a href="http://austindevlabs.com" target="_NEW"><img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com"></a>
-      <p>Get learning for free!</p>
+    {{ sidebar['sidebar']|safe }}
     </div>
   </div>
 </div>

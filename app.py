@@ -49,7 +49,13 @@ def view(postid):
     keywords=post['keywords']
   except:
     keywords=""
-  return render_template('view.html',blog_title="Bug Blog",post=post,keywords=keywords,logged_in=session['logged_in'])
+
+
+  try:
+    sidebar = db.settings.find_one({'name':'sidebar'})
+  except:
+    sidebar = {'sidebar':''}
+  return render_template('view.html',blog_title="Bug Blog",post=post,keywords=keywords,logged_in=session['logged_in'],sidebar=sidebar)
 
 @app.route('/add/',methods=['GET','POST'])
 def add():
@@ -63,7 +69,11 @@ def add():
     db.posts.insert({'date':i,'title':title,'body':body,'keywords':keywords})
     #except: 
     #  return render_template('uhoh.html')
-    return render_template('index.html',blog_title="Bug Blog",logged_in=session['logged_in'])
+    try: 
+      sidebar = db.settings.find_one({'name':'sidebar'})
+    except:
+      sidebar = {'name':'sidebar','sidebar':''}
+    return redirect(url_for('index',blog_title="Bug Blog",sidebar=sidebar,logged_in=session['logged_in']))
 
 @app.route('/edit/<post_id>',methods=['GET'])
 def edit(post_id):
@@ -152,4 +162,4 @@ def sidebar():
  
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run(host="0.0.0.0",debug=True)
