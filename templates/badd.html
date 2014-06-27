@@ -3,17 +3,22 @@
 {% include 'header.html' %}
 {% block content %}
 <div class="container">
-    <div class="page-header">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
       <form action="." method="POST">
         <input type="text" class="form-control" name="title" placeholder="Title">
         <br>
-        <textarea name="body" class="form-control" rows=5 placeholder="Much inspire"></textarea>
+        <textarea name="body" class="form-control" rows=5 placeholder=""></textarea>
         <br />
-        <input class="form-control" type="text" name="keywords" placeholder="Keywords, delimited by a comma">
+    </div><!-- end of middle div-->
+    <div class="col-md-4">
+        <input class="btn-primary form-control" type="submit" name="submit" value="Post">
         <br>
-        <input class="form-control" type="submit" name="submit" value="Post">
+        <input class="form-control" type="text" name="keywords" placeholder="Keywords, delimited by a comma">
       </form>      
-    </div>
+    </div><!-- end of divs -->
+  </div>
 </div>
 {% endblock %}
 

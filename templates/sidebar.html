@@ -3,15 +3,21 @@
 {% include 'header.html' %}
 {% block content %}
 <div class="container">
-    <div class="page-header">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
       <form action="." method="POST">
         <br />
-        Enter the html for your sidebar below:
             <textarea name="sidebar" class="form-control" rows=5>{% if sidebar is defined %}{{sidebar['sidebar']}}{% endif %}</textarea>
+        <label>Enter the html for your sidebar above:</label>
         <br />
         <br />
-        <input class="form-control" type="submit" name="submit" value="Post">
+      </div><!-- end of middle -->
+      <div class="col-md-4">
+        <br />
+        <input class="btn-primary form-control" type="submit" name="submit" value="Post">
       </form>      
+    </div><!-- end of far right -->
     </div>
 </div>
 {% endblock %}

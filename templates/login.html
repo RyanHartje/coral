@@ -23,12 +23,10 @@
       <input class="form-control" type="password" name="password" placeholder="password">
       <input class="form-control" type="submit" name="submit" value="Log in">
     </form>
-  </div>
+  </div><!-- end of middle content -->
   <div class="col-md-4">
-      <h5>Brought to you by:</h5>
-      <img src="http://austindevlabs.com/logo.png" alt="AustinDevLabs.com">
-      <p>This and that</p>
-  </div>
+    {{sidebar|safe}}
+  </div><!-- end of sidebar -->
   </div>
 </div>
 {% endblock %}
