@@ -1,15 +1,52 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Feed Coral{%endblock%}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+{% endblock %}
 {% include 'header.html' %}
 {% block content %}
 <div class="container">
-    <div class="page-header">
+        <h1>Settings</h1>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
       <form action="." method="POST">
+        <label>Site Title:</label>
+        <input type="text" name="blog_title" class="form-control">
         <br />
+        <label>Logo:</label>
+        <input type="text" placeholder="Filename.png" class="form-control" name="logo">
+        <input type="submit" value="Upload File" onclick="alert('Coming soon')" class="form-control" name="submit">
         <br />
+        <label>Comments: </label>
+        <input class="" type="radio" name="comments" value="on"> On <input type="radio" name="comments" value="off"> Off
         <br />
-        <input class="form-control" type="submit" name="submit" value="Post">
+        <label>Posts per Page:</label>
+        <select name="perpage">
+          {% for i in range(10,110,10) %}
+          <option>{{ i }}</option>
+          {% endfor %}
+        </select>
+
+        <a href="/settings/sidebar/">Edit Sidebar</a>
+    </div><!-- end of left center -->
+    <div class="col-md-4">
+      <label>Google Analytics</label>
+      <textarea class="form-control" placeholder="Enter Javascript here" rows="7"></textarea>   
+    </div><!-- end of right center -->
+    <div class="col-md-2"></div>
+  </div><!-- end of row -->
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+
+        <input class="form-control btn-primary" type="submit" name="submit" value="Post">
       </form>      
+    
     </div>
+    <div class="col-md-4"></div>
+  </div><!-- end of row--> 
+
 </div>
 {% endblock %}

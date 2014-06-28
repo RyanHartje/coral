@@ -3,17 +3,20 @@
 {% include 'header.html' %}
 {% block content %}
 <div class="container">
-    <div class="page-header">
-      <form action="." method="POST">
-        <input class="form-control" type="text" name="title" value="{{post['title']}}">
-        <input type="hidden" value={{post['_id']}} name="post_id"> 
-        <br />
-        <textarea name="body" class="form-control" rows=5>{{post['body']}}</textarea>
-        <br />
-        <input class="form-control" type="text" name="keywords" value="{{post['keywords']}}" placeholder="Keywords, delimited by a comma">
-        <br />
-        <input class="form-control" type="submit" name="submit" value="Post">
-      </form>      
+    <div class="row">
+      <div class="col-md-9">
+        <form action="." method="POST">
+          <input class="form-control" type="text" name="title" value="{{post['title']}}">
+          <input type="hidden" value={{post['_id']}} name="post_id"> 
+          <br />
+          <textarea name="body" class="form-control" rows=5>{{post['body']}}</textarea>
+      </div><!-- end of middle div -->
+      <div class="col-md-3">
+          <input class="btn-primary form-control" type="submit" name="submit" value="Post">
+          <br />
+          <input class="form-control" type="text" name="keywords" value="{{post['keywords']}}" placeholder="Keywords, delimited by a comma">
+        </form>      
+      </div><!-- end of right column -->
     </div>
 </div>
 {% endblock %}

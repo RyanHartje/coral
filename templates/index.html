@@ -27,10 +27,13 @@
         {% endif %}
       </h4>
       <p>{{post['body']|safe}}</p>
+      <i class="glyphicon glyphicon-comment"></i>
+      <br>
+      <br>
       {% endfor %}
     </div>
     <div class="col-md-4">
-
+      <br /><br />
     {% if logged_in %}
       <a href="settings/sidebar/"><i class="glyphicon glyphicon-pencil"></i></a>
     {% endif %}

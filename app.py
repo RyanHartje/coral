@@ -129,9 +129,13 @@ def vote():
   data = request.json
   print(db.posts.update({'_id':ObjectId(request.json['_id'])},{vote: request.json['vote']},safe=False,upsert=False))
 
-@app.route('/settings/')
+@app.route('/settings/', methods=['GET','POST'])
 def settings():
-  return render_template('settings.html')
+  if request.method=='GET':
+    return render_template('settings.html',blog_title="Bug blog",logged_in=session['logged_in'])
+
+  else:
+    return redirect(url_for('index',blog_title="Bug blog",logged_in=session['logged_in']))
 
 @app.route('/settings/sidebar/', methods=['GET','POST'])
 def sidebar():
