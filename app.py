@@ -33,7 +33,10 @@ i = datetime.datetime.now()
 
 @app.route('/')
 def index():
-  posts = db.posts.find()
+  # Sort our posts decending from latest to eldest
+  posts = db.posts.find().sort('date',-1)
+
+  # Try to grab our sidebar
   try:
     sidebar = db.settings.find_one({'name':'sidebar'})
   except:
@@ -135,7 +138,14 @@ def settings():
     return render_template('settings.html',blog_title="Bug blog",logged_in=session['logged_in'])
 
   else:
-    return redirect(url_for('index',blog_title="Bug blog",logged_in=session['logged_in']))
+    try:
+      print("locating any prior settings")
+      settings = db.settings.find_one({'name':'settings'})      
+    except:
+      print("No settings found, instanciating new settings")
+      db.settings.insert({'name':'settings','title':request.form['title'],'logo':requst.form['logo'],'comments':request.form['comments'],'perpage':request.form['perpage'],'gcode':request.form['gcode'],'keywords':request.form['keywords']})
+      settings = db.settings.find_one({'name':'settings'})      
+    return redirect(url_for('index',blog_title=settings['title'],logged_in=session['logged_in'],sidebar=settings['sidebar']))
 
 @app.route('/settings/sidebar/', methods=['GET','POST'])
 def sidebar():

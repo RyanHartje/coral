@@ -16,8 +16,8 @@
         <input type="text" name="blog_title" class="form-control">
         <br />
         <label>Logo:</label>
-        <input type="text" placeholder="Filename.png" class="form-control" name="logo">
-        <input type="submit" value="Upload File" onclick="alert('Coming soon')" class="form-control" name="submit">
+        <input type="text" placeholder="Filename.png" class="form-control inline" name="logo">
+        <input type="submit" value="Upload File" onclick="alert('Coming soon')" class="form-control btn-info inline" name="submit">
         <br />
         <label>Comments: </label>
         <input class="" type="radio" name="comments" value="on"> On <input type="radio" name="comments" value="off"> Off
@@ -33,7 +33,8 @@
     </div><!-- end of left center -->
     <div class="col-md-4">
       <label>Google Analytics</label>
-      <textarea class="form-control" placeholder="Enter Javascript here" rows="7"></textarea>   
+      <textarea name="gcode" class="form-control" placeholder="Enter Javascript here" rows="7"></textarea>   
+      <input name="keywords" type="text" class="form-control" placeholder="Keywords for main page">
     </div><!-- end of right center -->
     <div class="col-md-2"></div>
   </div><!-- end of row -->

@@ -22,7 +22,7 @@
     <div class="col-md-1"></div>
     <div class="col-md-9">
         <br>
-        <textarea name="body" class="form-control" rows=5 placeholder=""></textarea>
+        <textarea name="body" class="form-control" rows=10 placeholder=""></textarea>
         <br />
     </div><!-- end of middle div-->
     <div class="col-md-1">
@@ -43,6 +43,6 @@ http://ckeditor.com/download
 {{ super() }}
 <script src="//cdn.ckeditor.com/4.4.1/standard/ckeditor.js"></script>
 <script>
-  CKEDITOR.replace('body');
+  CKEDITOR.replace('body',{height:500});
 </script>
 {% endblock %}
