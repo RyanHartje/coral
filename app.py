@@ -159,7 +159,7 @@ def sidebar():
     except:
       db.settings.insert({'name':'sidebar','sidebar':user_input})
       print("Exception Thrown, inserting sidebar")
-      print(db.settings.find_one({'name':'sidebar'}))
+      #print(db.settings.find_one({'name':'sidebar'}))
 
     posts = db.posts.find()
     return redirect(url_for('index',blog_title="Bug Blog",logged_in=session['logged_in'],posts=posts))

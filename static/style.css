@@ -1,2 +1,7 @@
 .inline{ display: inline }
 textarea{ resize: vertical; margin-bottom: 10px; }
+.votebutton{ padding: .5em; border: 0; }
+.votebutton:hover{ background: rgba(170,204,20,1); }
+.post{ padding: 1em 2em; border-radius: 10px; margin: 1em; }
+.post:nth-child(odd){background: rgba(245,245,245,1)}
+.navbar{ padding: 10px 0; }

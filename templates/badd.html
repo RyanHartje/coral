@@ -2,20 +2,31 @@
 {% block title %}Feed Coral{%endblock%}
 {% include 'header.html' %}
 {% block content %}
+<form action="." method="POST">
 <div class="container">
   <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-6">
-      <form action="." method="POST">
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
         <input type="text" class="form-control" name="title" placeholder="Title">
+    </div><!-- end of title -->
+    <div class="col-md-5">
+
+        <input class="form-control" type="text" name="keywords" placeholder="Keywords, delimited by a comma">
+    </div><!-- end of keywords -->
+    <div class="col-md-2">
+        <input class="btn-primary form-control" type="submit" name="submit" value="Post">
+    </div><!-- end of post button -->
+  </div><!-- end of top row -->
+
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-9">
         <br>
         <textarea name="body" class="form-control" rows=5 placeholder=""></textarea>
         <br />
     </div><!-- end of middle div-->
-    <div class="col-md-4">
-        <input class="btn-primary form-control" type="submit" name="submit" value="Post">
+    <div class="col-md-1">
         <br>
-        <input class="form-control" type="text" name="keywords" placeholder="Keywords, delimited by a comma">
       </form>      
     </div><!-- end of divs -->
   </div>

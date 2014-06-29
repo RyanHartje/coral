@@ -66,10 +66,16 @@ Coral uses a number of open source projects to work properly:
 Installation
 --------------
 
-```sh
+```ssh
 git clone https://github.com/ryanhartje/coral.git
 ```
 
+Usage
+----
+
+```ssh
+python app.py
+```
 
 License
 ----

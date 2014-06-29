@@ -8,19 +8,19 @@
 
 {% block styles %}
 {{super()}}
-<link href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="container">
 <div class="row">
-  <div class="col-md-2"></div>
-  <div class="col-md-6">
-      {% for post in posts %}
+  <div class="col-md-9">
+    {% for post in posts %}
+    <div class="row post">
+        <button href="#" onClick="vote(1,1)" class="votebutton"><i class="glyphicon glyphicon-chevron-up"></i></button>
+        <button href="#" onClick="vote(1,1)" class="votebutton"><i class="glyphicon glyphicon-chevron-down"></i></button> &nbsp;
       <h2 class="inline"><a href="view/{{post['_id']}}">{{post['title']}}</a></h2>
       <h4 class="inline">
-        <a href="#" onclick="vote({{post['_id']}},1)"><i class="glyphicon glyphicon-chevron-up"></i></a> 
-        <a href="#" onclick="vote({{post['_id']}},-1)"><i class="glyphicon glyphicon-chevron-down"></i></a> 
 
         {% if logged_in %}
         <a href="edit/{{post['_id']}}"><i class="glyphicon glyphicon-pencil"></i></a> <a href="remove/{{post['_id']}}"><i class="glyphicon glyphicon-trash"></i></a>
@@ -30,9 +30,10 @@
       <i class="glyphicon glyphicon-comment"></i>
       <br>
       <br>
-      {% endfor %}
+    </div><!-- end post / row -->
+    {% endfor %}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <br /><br />
     {% if logged_in %}
       <a href="settings/sidebar/"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -47,21 +48,28 @@
 {% block scripts %}
 {{super()}}
 <script>
+  $(document).ready(function(){
+    console.log("JQUERY ACTIVATE!");
+  });
+
   function vote(id,score){
-    // see what I did here? :p
-    var jason = { '_id':id, 'score':score };
-    $.ajax('vote',{
-      type: 'POST',
-      data: JSON.stringify(jason),
-      contentType: 'application/json',
-      success: function(data, textStatus, jqXHR){
-        console.log(data);
-      },
-      error: function(jqXHR, textStatus, errorThrown){
-        console.log(errorThrown);
-      }
-    }); 
-  }
+    console.log("id: " + id + " score: " + score);
+    }
+  /**
+  // see what I did here? :p
+  var jason = { '_id':id, 'score':score };
+  console.log("Applying vote to: " + id + ": " + score)
+  $.ajax('vote',{
+    type: 'POST',
+    data: JSON.stringify(jason),
+    contentType: 'application/json',
+    success: function(data, textStatus, jqXHR){
+      console.log(data);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+      console.log(errorThrown);
+    }
+  }); **/ 
 </script>
 {% endblock %}
 
