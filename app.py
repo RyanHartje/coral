@@ -138,14 +138,25 @@ def settings():
     return render_template('settings.html',blog_title="Bug blog",logged_in=session['logged_in'])
 
   else:
-    try:
-      print("locating any prior settings")
+    print("locating any prior settings")
+    print(request.form['title'])
+    print(request.form['logo'])
+    print(request.form['comments'])
+    print(request.form['perpage'])
+    print(request.form['gcode'])
+    print(request.form['keywords'])
+    settings = db.settings.find_one({'name':'settings'})      
+    if settings is None:
+      #print("attempting to insert settings: " + request.form)
+      print("Inserting new settings")
+      db.settings.insert({'name':'settings','title':request.form['title'],'logo':request.form['logo'],'comments':request.form['comments'],'perpage':request.form['perpage'],'gcode':request.form['gcode'],'keywords':request.form['keywords']})
+    else:
+      print("Updating current settings")
+      db.settings.update({'_id':ObjectId(settings['_id'])},{'name':'settings','title':request.form['title'],'logo':request.form['logo'],'comments':request.form['comments'],'perpage':request.form['perpage'],'gcode':request.form['gcode'],'keywords':request.form['keywords']},upsert=False,safe=False)
       settings = db.settings.find_one({'name':'settings'})      
-    except:
-      print("No settings found, instanciating new settings")
-      db.settings.insert({'name':'settings','title':request.form['title'],'logo':requst.form['logo'],'comments':request.form['comments'],'perpage':request.form['perpage'],'gcode':request.form['gcode'],'keywords':request.form['keywords']})
-      settings = db.settings.find_one({'name':'settings'})      
-    return redirect(url_for('index',blog_title=settings['title'],logged_in=session['logged_in'],sidebar=settings['sidebar']))
+    
+    print(settings)
+    return redirect(url_for('index',blog_title=settings['title'],logged_in=session['logged_in']))
 
 @app.route('/settings/sidebar/', methods=['GET','POST'])
 def sidebar():
