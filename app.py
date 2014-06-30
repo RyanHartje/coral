@@ -135,16 +135,14 @@ def vote():
 @app.route('/settings/', methods=['GET','POST'])
 def settings():
   if request.method=='GET':
-    return render_template('settings.html',blog_title="Bug blog",logged_in=session['logged_in'])
+    try:
+      settings = db.settings.find_one({'name':'settings'})
+      return render_template('settings.html',settings=settings,logged_in=session['logged_in'])
+    except:
+      return render_template('settings.html',blog_title="Coral",logged_in=session['logged_in'])
 
   else:
     print("locating any prior settings")
-    print(request.form['title'])
-    print(request.form['logo'])
-    print(request.form['comments'])
-    print(request.form['perpage'])
-    print(request.form['gcode'])
-    print(request.form['keywords'])
     settings = db.settings.find_one({'name':'settings'})      
     if settings is None:
       #print("attempting to insert settings: " + request.form)
