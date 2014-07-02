@@ -2,20 +2,16 @@
 coral - a Python/Mongo blog using Flask, a web frameworks.
 6-18-14
 ryan@ryanhartje.com
-http://github.com/ryanhartje
+http://github.com/ryanhartje/coral/
 
-pre alpha
-
-Functions:
-  create 
-  delete post
-  edit post
-  view posts
-  view all posts
+Please report any bugs at:
+  https://github.com/RyanHartje/coral/issues/new
 '''
 
 from flask import Flask, render_template, request, redirect, url_for
 from flask.ext.bootstrap import Bootstrap
+from flask.ext.moment import Moment
+from wtforms import StringField,RadioField,SelectField,TextAreaField,SubmitField
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime, settings
@@ -27,8 +23,7 @@ Bootstrap(app)
 date = datetime.datetime.now()
 client = MongoClient()
 db = client.coral
-session = {}
-session['logged_in']=False
+session = {'logged_in':False}
 i = datetime.datetime.now()
 
 @app.route('/')
