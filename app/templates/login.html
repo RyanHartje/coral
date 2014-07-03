@@ -1,5 +1,4 @@
 {% extends "bootstrap/base.html" %}
-{% include "header.html" %}
 
 {% block title %}Coral - Login{% endblock %}
 
@@ -9,8 +8,12 @@
 {% endblock %}
 
 {% block styles %}
-<link href="{{ url_for('static', filename='style.css') }}">
 {{super()}}
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+{% include "header.html" %}
 {% endblock %}
 
 {% block content %}

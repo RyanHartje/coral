@@ -19,7 +19,7 @@ Dependencies
 Install Python Libraries Flask, flask-bootstrap, and pymongo
 
 ```ssh
-easy_install flask flask-bootstrap pymongo
+easy_install flask flask-bootstrap flask-moment pymongo wtforms
 ```
 
 MongoDB
@@ -74,7 +74,7 @@ Usage
 ----
 
 ```ssh
-python app.py
+python app/app.py
 ```
 
 License
