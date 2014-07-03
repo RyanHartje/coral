@@ -14,7 +14,7 @@ from flask.ext.moment import Moment
 from wtforms import StringField,RadioField,SelectField,TextAreaField,SubmitField
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import datetime, settings
+import datetime
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -26,18 +26,28 @@ db = client.coral
 session = {'logged_in':False}
 i = datetime.datetime.now()
 
+def settings():
+  return db.settings.find_one({'name':'settings'})
+
+def sidebar():
+  return db.settings.find_one({'name':'sidebar'})
+
 @app.route('/')
 def index():
+
   # Sort our posts decending from latest to eldest
+  #     This does not raise an error if posts is blank so no catch is necessary
   posts = db.posts.find().sort('date',-1)
 
   # Try to grab our sidebar
   try:
     sidebar = db.settings.find_one({'name':'sidebar'})
+    settings = db.settings.find_one({'name':'settings'})
   except:
     sidebar = {'sidebar':''}
+    settings = {'title':'Coral'}
 
-  return render_template('index.html',blog_title="Bug Blog",posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'],sidebar=sidebar)
+  return render_template('index.html',blog_title=settings()['title'],posts=posts,keywords="austindevlabs, free python hosting, python interpreter",logged_in=session['logged_in'],sidebar=sidebar)
 
 @app.route('/view/<postid>')
 def view(postid):
@@ -48,11 +58,14 @@ def view(postid):
   except:
     keywords=""
 
-
+  # Try to grab our sidebar
   try:
     sidebar = db.settings.find_one({'name':'sidebar'})
+    settings = db.settings.find_one({'name':'settings'})
   except:
     sidebar = {'sidebar':''}
+    settings = {'title':'Coral'}
+
   return render_template('view.html',blog_title="Bug Blog",post=post,keywords=keywords,logged_in=session['logged_in'],sidebar=sidebar)
 
 @app.route('/add/',methods=['GET','POST'])
@@ -67,10 +80,17 @@ def add():
     db.posts.insert({'date':i,'title':title,'body':body,'keywords':keywords})
     #except: 
     #  return render_template('uhoh.html')
-    try: 
-      sidebar = db.settings.find_one({'name':'sidebar'})
-    except:
-      sidebar = {'name':'sidebar','sidebar':''}
+
+  # Try to grab our sidebar
+  try:
+    sidebar = db.settings.find_one({'name':'sidebar'})
+    settings = db.settings.find_one({'name':'settings'})
+  except:
+    sidebar = {'sidebar':''}
+    settings = {'title':'Coral'}
+
+
+
     return redirect(url_for('index',blog_title="Bug Blog",sidebar=sidebar,logged_in=session['logged_in']))
 
 @app.route('/edit/<post_id>',methods=['GET'])
