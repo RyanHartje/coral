@@ -6,51 +6,44 @@
 <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
 {% endblock %}
 
+{% import "bootstrap/wtf.html" as wtf %}
+
 {% block navbar %}
 {% include 'header.html' %}
 {% endblock %}
 
 {% block content %}
 <div class="container">
-        <h1>Settings</h1>
+  {# The following are for alert messages #}
+  {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  <h1>Settings</h1>
   <div class="row">
-    <div class="col-md-2"></div>
     <div class="col-md-4">
       <form action="." method="POST">
-        <label>Site Title:</label>
-        <input type="text" name="title" class="form-control" value="{{settings['title']}}">
-        <br />
-        <label>Logo:</label>
-        <input type="text" placeholder="Filename.png" class="form-control inline" name="logo" value="{{settings['logo']}}">
-        <input type="submit" value="Upload File" onclick="alert('Coming soon')" class="form-control btn-info inline" name="submit">
-        <br />
-        <label>Comments: </label>
-        <input class="" type="radio" name="comments" value="on"> On <input type="radio" name="comments" value="off"> Off
-        <br />
-        <label>Posts per Page:</label>
-        <select name="perpage">
-          {% for i in range(25,100,25) %}
-          <option>{{ i }}</option>
-          {% endfor %}
-        </select>
-
-        <a href="/settings/sidebar/">Edit Sidebar</a>
-    </div><!-- end of left center -->
-    <div class="col-md-4">
-      <label>Google Analytics</label>
-      <textarea name="gcode" class="form-control" placeholder="Enter Javascript here" rows="7">{{settings['gcode']}}</textarea>   
-      <input name="keywords" type="text" class="form-control" placeholder="Keywords for main page" value="{{settings['keywords']}}">
-    </div><!-- end of right center -->
-    <div class="col-md-2"></div>
-  </div><!-- end of row -->
-  <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-
-        <input class="form-control btn-primary" type="submit" name="submit" value="Post">
+        {{form.csrf_token}}
+        {% if form.csrf_token.errors %}
+          <div class="warning">You have submitted an invalid CSRF token</div>
+        {% endif %}
+        {{form.title.label}}
+        {{form.title(class='form-control',value=settings['title'])}}
+        {{form.comments.label}}
+        {{form.comments(value=settings['comments'])}}
+        {{form.gcode.label}}
+        {{form.gcode(class='form-control',value=settings['gcode'])}}
+        {{form.keywords.label}}
+        {{form.keywords(class='form-control',value=settings['keywords'])}}
+        <br \>
+        {{form.submit(class="form-control btn-primary")}}
       </form>      
     
     </div>
+    <div class="col-md-4"></div>
     <div class="col-md-4"></div>
   </div><!-- end of row--> 
 

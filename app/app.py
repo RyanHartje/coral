@@ -8,10 +8,12 @@ Please report any bugs at:
   https://github.com/RyanHartje/coral/issues/new
 '''
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.moment import Moment
+from flask.ext.wtf import Form
 from wtforms import StringField,RadioField,SelectField,TextAreaField,SubmitField
+from wtforms.validators import Required
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
@@ -20,10 +22,11 @@ app = Flask(__name__)
 Bootstrap(app)
 
 # Here is a debug error for more verbose output to the logging facility
-debug = False
-#debug = True
+#debug = False
+debug = True
 
 # Instanciate our variables for date and also for mongo here
+app.config['SECRET_KEY'] = "#3d78jH}uys89sy"
 date = datetime.datetime.now()
 client = MongoClient()
 db = client.coral
@@ -50,6 +53,18 @@ def getSidebar():
     print("Sidebar: %s" % sidebar)
   return sidebar
 
+class settingsForm(Form):
+  class Meta:
+    csrf = True
+    csrf_secret = b'#3d78jH}uys89sy'
+
+  title = StringField('Site Title:',validators=[Required()])
+  comments = RadioField('Comments',choices=[('on','On'),('off','Off')],validators=[Required()])
+  # perpage
+  gcode = TextAreaField('Google Analytics Code:')
+  keywords = StringField('Keywords:')
+  submit = SubmitField('Submit')
+
 @app.route('/')
 def index():
 
@@ -60,25 +75,24 @@ def index():
   # call the sidebar and settings so we can call our index
   sidebar = getSidebar() 
   settings = getSettings()
-  return render_template('index.html',blog_title=settings['title'],posts=posts,keywords=settings['keywords'],logged_in=session['logged_in'],sidebar=sidebar)
+  return render_template('index.html',posts=posts,settings=settings,logged_in=session['logged_in'],sidebar=sidebar)
 
 @app.route('/view/<postid>')
 def view(postid):
   post = db.posts.find_one({'_id':ObjectId(postid)})
-  print(post)
-  try:
-    keywords=post['keywords']
-  except:
-    keywords=""
+  if debug:
+    print(post)
 
   settings = getSettings()
   sidebar = getSidebar()
-  return render_template('view.html',blog_title=settings['title'],post=post,keywords=keywords,logged_in=session['logged_in'],sidebar=sidebar)
+  return render_template('view.html',settings=settings,post=post,logged_in=session['logged_in'],sidebar=sidebar)
 
 @app.route('/add/',methods=['GET','POST'])
 def add():
+  settings = getSettings()
+  sidebar = getSidebar()
   if request.method=='GET':
-    return render_template('badd.html',blog_title=settings['title'],logged_in=session['logged_in'])
+    return render_template('badd.html',settings=settings,logged_in=session['logged_in'])
   elif request.method=='POST':
     title = request.form['title']
     body = request.form['body']#.replace('\r\n','<br />')
@@ -96,15 +110,13 @@ def add():
     sidebar = {'sidebar':''}
     settings = {'title':'Coral'}
 
-
-
-    return redirect(url_for('index',blog_title=settings['title'],sidebar=sidebar,logged_in=session['logged_in']))
+    return redirect(url_for('index',settings=settings,sidebar=sidebar,logged_in=session['logged_in']))
 
 @app.route('/edit/<post_id>',methods=['GET'])
 def edit(post_id):
   settings = getSettings()
   post=db.posts.find_one({'_id':ObjectId(post_id)})
-  return render_template('edit.html',blog_title=settings['title'],post=post,logged_in=session['logged_in'])
+  return render_template('edit.html',settings=settings,post=post,logged_in=session['logged_in'])
 
 @app.route('/edit/',methods=['POST'])
 def pedit():
@@ -116,19 +128,20 @@ def pedit():
   #except: 
   #  return render_template('uhoh.html')
   posts=db.posts.find()
-  return redirect(url_for('index',blog_title=settings['title'],posts=posts,logged_in=session['logged_in']))
+  settings=getSettings()
+  return redirect(url_for('index',settings=settings,posts=posts,logged_in=session['logged_in']))
 
 @app.route('/remove/<post_id>',methods=['GET'])
 def remove(post_id):
   title = db.posts.find_one({'_id':ObjectId(post_id)})
   print(db.posts.remove({'_id':ObjectId(post_id)}))
-  return render_template('remove.html',blog_title=settings['title'],title=title)
+  return render_template('remove.html',settings=settings,title=title)
 
 @app.route('/login/',methods=['GET','POST'])
 def login():
   settings = getSettings()
   if request.method=='GET':
-    return render_template('login.html',blog_title=settings['title'],logged_in=session['logged_in'])
+    return render_template('login.html',settings=settings,logged_in=session['logged_in'])
 
   elif request.method=='POST':
     posts = db.posts.find()
@@ -142,7 +155,7 @@ def login():
     else:
       session['logged_in'] = False
 
-    return redirect(url_for('index',blog_title=settings['title'],posts=posts,logged_in=session['logged_in']))
+    return redirect(url_for('index',settings=settings,posts=posts,logged_in=session['logged_in']))
 
 @app.route('/logout/')
 def logout():
@@ -159,45 +172,43 @@ def vote():
 
 @app.route('/settings/', methods=['GET','POST'])
 def settings():
-  if request.method=='GET':
-    try:
-      settings = db.settings.find_one({'name':'settings'})
-      return render_template('settings.html',settings=settings,logged_in=session['logged_in'])
-    except:
-      return render_template('settings.html',blog_title="Coral",logged_in=session['logged_in'])
+  settings = getSettings()
+  form = settingsForm()
 
-  # POST 
-  elif request.method=='POST':
-    #Validate input here
-    user_input = { 'title': request.form['title'], 'logo': request.form['logo'], 'comments': request.form['comments'], 'perpage': request.form['perpage'], 'gcode': request.form['gcode'], 'keywords': request.form['keywords'], 'name':'settings'}
-    
-    for i in user_input:
-      print i
-      if i == '':
-        user_input[i]=None
+  # form.validate_on_submit is a boolean that is True 
+  # on form submission, so no need to capture the POST method
+  if form.validate_on_submit():
+    flash("Settings Updated")
+    title = form.title.data
+    comments = form.comments.data
+    gcode = form.gcode.data
+    keywords = form.keywords.data
 
-    # If settings wasn't in the database, let's put our variables in it
-    settings = getSettings()      
-    print("Updating current settings")
+    # After, we clear the form data. 
+    form.title.data=''
+    form.comments.data=''
+    form.gcode.data=''
+    form.keywords.data=''
+
+    user_input = { 'title': title, 'comments': comments, 'gcode': gcode, 'keywords': keywords, 'name':'settings'}
+
+    if debug:
+      print("Updating current settings: %s" % user_input)
+
     db.settings.update({'_id':ObjectId(settings['_id'])},user_input,upsert=False,safe=False)
-
-    settings = getSettings()      
-    print(settings)
-
-    return redirect(url_for('index',blog_title=settings,logged_in=session['logged_in']))
+    return redirect(url_for('settings',settings=settings,logged_in=session['logged_in'],form=form))
+  elif not form.validate_on_submit() and request.method=='POST':
+    flash("Error: Please choose a value for all settings")
+  form.gcode.data = settings['gcode']
+  return render_template('settings.html',settings=settings,logged_in=session['logged_in'],form=form)
 
 @app.route('/settings/sidebar/', methods=['GET','POST'])
 def sidebar():
   
-  try:
-    sidebar = db.settings.find_one({'name':'sidebar'})
-    print("Got Sidebar: " + sidebar['sidebar'])
-  except:
-    sidebar = {}
-    print("Sidebar undefinied")
-  
+  sidebar = getSidebar()
+  settings = getSettings()
   if request.method=='GET':
-    return render_template('sidebar.html',blog_title=settings['title'],logged_in=session['logged_in'],sidebar=sidebar)
+    return render_template('sidebar.html',settings=settings,logged_in=session['logged_in'],sidebar=sidebar)
 
   elif request.method=='POST':
     sidebar = db.settings.find_one({'name':'sidebar'})
@@ -211,7 +222,7 @@ def sidebar():
       #print(db.settings.find_one({'name':'sidebar'}))
 
     posts = db.posts.find()
-    return redirect(url_for('index',blog_title=settings['title'],logged_in=session['logged_in'],posts=posts))
+    return redirect(url_for('index',settings=settings,logged_in=session['logged_in'],posts=posts))
  
 
 if __name__ == "__main__":

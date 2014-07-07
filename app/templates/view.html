@@ -2,7 +2,7 @@
 
 {% block metas %}
 {{super()}}
-<meta name="keywords" value="{{ keywords }}">
+<meta name="keywords" value="{{ settings['keywords'] }}">
 {% endblock %}
 
 {% block styles %}
@@ -17,8 +17,7 @@
 {% block content %}
 <div class="container">
 <div class="row">
-  <div class="col-md-2"></div>
-  <div class="col-md-6">
+  <div class="col-md-8">
       <h2 class="inline"><a href="view/{{post['_id']}}">{{post['title']}}</a></h2>
       <h4 class="inline">
         <a href="#" onclick="vote({{post['_id']}},1)"><i class="glyphicon glyphicon-chevron-up"></i></a> 
