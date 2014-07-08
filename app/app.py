@@ -35,11 +35,11 @@ i = datetime.datetime.now()
 
 # We can call this function elsewhere to return our (JSON) object
 def getSettings():
-  try:
-    settings = db.settings.find_one({'name':'settings'})
-  except:
-    settings = {'title':'Coral','keywords':'','logo':'', 'perpage':25,'comments':'off','_id':ObjectId(1) }
-  print("Finding settings")
+  settings = db.settings.find_one({'name':'settings'})
+  if settings is None:
+    settings = {'title':'Coral','keywords':'','logo':'', 'perpage':25,'comments':'off','gcode':''}
+  if debug:
+    print("Finding settings")
   return settings
 
 def getSidebar():
@@ -54,9 +54,11 @@ def getSidebar():
   return sidebar
 
 class settingsForm(Form):
+  """
   class Meta:
     csrf = True
     csrf_secret = b'#3d78jH}uys89sy'
+  """
 
   title = StringField('Site Title:',validators=[Required()])
   comments = RadioField('Comments',choices=[('on','On'),('off','Off')],validators=[Required()])
@@ -110,7 +112,7 @@ def add():
     sidebar = {'sidebar':''}
     settings = {'title':'Coral'}
 
-    return redirect(url_for('index',settings=settings,sidebar=sidebar,logged_in=session['logged_in']))
+  return redirect(url_for('index',settings=settings,sidebar=sidebar,logged_in=session['logged_in']))
 
 @app.route('/edit/<post_id>',methods=['GET'])
 def edit(post_id):
@@ -194,8 +196,10 @@ def settings():
 
     if debug:
       print("Updating current settings: %s" % user_input)
-
-    db.settings.update({'_id':ObjectId(settings['_id'])},user_input,upsert=False,safe=False)
+    try:
+      db.settings.update({'_id':ObjectId(settings['_id'])},user_input,upsert=False,safe=False)
+    except:
+      db.settings.insert(user_input,upsert=False,safe=False)
     return redirect(url_for('settings',settings=settings,logged_in=session['logged_in'],form=form))
   elif not form.validate_on_submit() and request.method=='POST':
     flash("Error: Please choose a value for all settings")
