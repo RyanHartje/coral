@@ -58,8 +58,9 @@ Tech
 
 Coral uses a number of open source projects to work properly:
 
-* [Twitter Bootstrap] - great UI boilerplate for modern web apps
 * [Flask] - A Web Frameworks for Python
+* [pymongo] - Mongo Bindings for Python
+* [Twitter Bootstrap] - great UI boilerplate for modern web apps
 * [jQuery] - a javascript library
 * [CKEditor] - a RTF themer for textarea that runs in javascript
 
@@ -85,4 +86,5 @@ MIT
 [Twitter Bootstrap]:http://twitter.github.com/bootstrap/
 [jQuery]:http://jquery.com
 [Flask]:http://flask.pocoo.org/
+[pymongo]:http://api.mongodb.org/python/current/
 [CKEditor]:http://docs.ckeditor.com/#!/guide

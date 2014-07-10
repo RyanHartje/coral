@@ -1,4 +1,3 @@
-
 /** Comments **/
 .inline{ display: inline }
 textarea{ resize: vertical; margin-bottom: 10px; }
@@ -10,17 +9,21 @@ textarea{ resize: vertical; margin-bottom: 10px; }
 .post img{ max-width: 100%; }
 
 
-/** Navbar **/
-.navbar{ padding: 10px 0; background: rgba(33,151,229,1);}
-.navbar-inverse{ border-color: none; background: #ff7f50; }
+/** Navbar background: rgba(33,151,229,1) **/
+.navbar{ padding: 10px 0; background: -webkit-linear-gradient(bottom,#000,#222); }
+.navbar-inverse{ border-color: none; background: -webkit-linear-gradient(top,rgba(244,244,244),rgba(211,211,211)); }
 .nav li a:hover{ background: none; }
 .nav a{ color: white;}
-.nav a:hover{ color: #092A40; }
+.nav a:hover{ color: #00ff00; }
 .navbar-header{color: green}
-.navbar-header a:hover{ color: white}
+.navbar-header a:hover{ color: #00ff00}
 
 /** Links, buttons, and Hovers **/
-a{color: black; }
+/** a{color: black; } **/
+.navbar a{color: white; }
 a:hover{color: rgba(37,168,255,1);}
 .votebutton{ padding: .5em .6em; border: 0; }
 .votebutton:hover{ background: rgba(170,204,20,1); }
+
+/** Font formatting **/
+blockquote{ background: rgba(245,245,245,1); border: 1px solid rgba(155,155,155,0.4); border-radius: 5px; font-size: 12px; font-family: monospace; }
