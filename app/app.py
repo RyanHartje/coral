@@ -54,6 +54,7 @@ def getSidebar():
   return sidebar
 
 class settingsForm(Form):
+  settings = getSettings()
   """
   class Meta:
     csrf = True
@@ -61,14 +62,13 @@ class settingsForm(Form):
   """
 
   title = StringField('Site Title:',validators=[Required()])
-  comments = RadioField('Comments',choices=[('on','On'),('off','Off')],validators=[Required()])
+  comments = SelectField('Comments',choices=[('on','On'),('off','Off')],validators=[Required()],default=settings['comments'])
   # perpage
   gcode = TextAreaField('Google Analytics Code:')
   keywords = StringField('Keywords:')
   submit = SubmitField('Submit')
 
 @app.route('/')
-@cache.cached(timeout=50)
 def index():
 
   # Sort our posts decending from latest to eldest
@@ -239,7 +239,7 @@ def add_header(response):
   and also to cache the rendered page for 10 minutes.
   """
   response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-  response.headers['Cache-Control'] = 'public, max-age=0'
+  response.headers['Cache-Control'] = 'public, max-age=28000, s-maxage=28000,no-cache'
   return response
 
 if __name__ == "__main__":
