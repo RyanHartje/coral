@@ -68,7 +68,6 @@ class settingsForm(Form):
   submit = SubmitField('Submit')
 
 @app.route('/')
-@cache.cached(timeout=50)
 def index():
 
   # Sort our posts decending from latest to eldest
