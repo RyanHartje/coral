@@ -78,6 +78,16 @@ Usage
 python app/app.py
 ```
 
+Resources
+----
+
+Caching in Flask:
+
+http://stackoverflow.com/questions/13768007/browser-caching-issues-in-flask 
+
+Cache explained:
+http://www.mobify.com/blog/beginners-guide-to-http-cache-headers/
+
 License
 ----
 

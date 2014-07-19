@@ -33,7 +33,7 @@
         {{form.title.label}}
         {{form.title(class='form-control',value=settings['title'])}}
         {{form.comments.label}}
-        {{form.comments(value=settings['comments'])}}
+        {{form.comments(class='form-control', default=settings['comment'])}}
         {{form.gcode.label}}
         {{form.gcode(class='form-control',value=settings['gcode'])}}
         {{form.keywords.label}}
